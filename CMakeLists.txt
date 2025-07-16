@@ -3,11 +3,12 @@
 cmake_minimum_required(VERSION 3.14)
 
 # Define the project name, version, and language
-project(Ecosim VERSION 1.0 LANGUAGES CXX)
+project(EcoSim VERSION 1.0 LANGUAGES CXX)
 
 # Set the C++ standard to C++17 (good for modern features)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF) # Disable non-standard GNU extensions
 
 
 # --- Google Test Integration ---
@@ -18,7 +19,7 @@ include(FetchContent)
 FetchContent_Declare(
   googletest
   GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG    release-1.14.0 # Use a specific, stable version
+  GIT_TAG    main # Use a specific, stable version
 )
 
 # Make the googletest source code available to our project
@@ -26,9 +27,9 @@ FetchContent_MakeAvailable(googletest)
 
 
 # --- Main Application Target ---
-# Add our main executable, named "Ecosim"
+# Add our main executable, named "EcoSim"
 # It is built from the source file(s) listed
-add_executable(Ecosim src/main.cpp)
+add_executable(EcoSim src/main.cpp)
 
 
 # --- Testing Setup ---

@@ -1,6 +1,6 @@
 #include <iostream>
+using namespace std;
 
-int main() {
-    std::cout << "Ecosystem Simulator starting..." << std::endl;
-    return 0;
+int main(){
+    cout << "Hello, World!" << endl;
 }
