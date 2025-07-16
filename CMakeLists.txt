@@ -36,8 +36,13 @@ add_executable(EcoSim src/main.cpp)
 # Enable the testing infrastructure for CMake
 enable_testing()
 
-# Add our test runner executable, named "RunTests"
-add_executable(RunTests tests/test_initial.cpp)
+# 1. Automatically find all source files in the 'tests' directory
+#    that end with .cpp and store them in a variable called TEST_SOURCES.
+file(GLOB TEST_SOURCES "tests/*.cpp")
+
+# 2. Add our test runner executable, named "RunTests".
+#    It is built from the list of source files we just found.
+add_executable(RunTests ${TEST_SOURCES})
 
 # Link our test runner against the Google Test libraries
 # gtest_main includes a main() function, so we don't need our own
