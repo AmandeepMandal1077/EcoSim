@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../src/kinematics.h"
+#include "../include/Kinematics.h"
 
 TEST(Vector2DTest, Equality){
     kinematics::Vector2D vec1(3, 4);
@@ -75,10 +75,10 @@ TEST(Vector2DTest, InPlaceScalarMultiplication){
     EXPECT_TRUE(vec1 == kinematics::Vector2D(10, 15));
 }
 
-TEST(StateTest, UpdateVelocity){
+TEST(StateTest, SetVelocity){
     kinematics::State state(0, 0, 1, 1);
     
-    state.updateVelocity(2, 3);
+    state.setVelocity(2, 3);
     
     EXPECT_EQ(state.getVelocity(), kinematics::Vector2D(2, 3));
     EXPECT_TRUE(state.getVelocity() == kinematics::Vector2D(2, 3));
@@ -129,23 +129,41 @@ TEST(BodyTest, CreateWithPositionOnly){
     EXPECT_TRUE(body.getState() == kinematics::State(5, 6, 0, 0));
 }
 
-TEST(BodyTest, UpdateVelocity){
+TEST(BodyTest, SetVelocity){
     kinematics::Body body(0, 0, 1, 1);
     
-    body.updateVelocity(2, 3);
+    body.setVelocity(2, 3);
     EXPECT_EQ(body.getVelocity(), kinematics::Vector2D(2, 3));
     EXPECT_TRUE(body.getVelocity() == kinematics::Vector2D(2, 3));
 }
 
-TEST(BodyTest, ApplyVelocityAndUpdatePosition){
+TEST(BodyTest, ApplyVelocityAndSetPosition){
     kinematics::Body body(0, 0, 1, 1);
 
     body.applyVelocity();
     EXPECT_EQ(body.getPosition(), kinematics::Vector2D(1, 1));
     EXPECT_TRUE(body.getPosition() == kinematics::Vector2D(1, 1));
     
-    body.updateVelocity(2, 3);
+    body.setVelocity(2, 3);
     body.applyVelocity();
     EXPECT_EQ(body.getPosition(), kinematics::Vector2D(3, 4));
     EXPECT_TRUE(body.getPosition() == kinematics::Vector2D(3, 4));
+}
+
+TEST(BodyTest, UpdateCurrentPosition){
+    kinematics::Body body(1, 1, 2, 2);
+    
+    kinematics::Vector2D* pos = &(body.getPosition());
+    *pos += kinematics::Vector2D(3, 4);
+
+    EXPECT_EQ(*pos, kinematics::Vector2D(4, 5));
+    EXPECT_EQ(body.getPosition(), kinematics::Vector2D(4, 5));
+}
+
+TEST(BodyTest, SetPosition){
+    kinematics::Body body(0, 0, 0, 0);
+    
+    body.setPosition(5, 6);
+    EXPECT_EQ(body.getPosition(), kinematics::Vector2D(5, 6));
+    EXPECT_TRUE(body.getPosition() == kinematics::Vector2D(5, 6));
 }
