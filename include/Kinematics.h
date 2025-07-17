@@ -1,6 +1,8 @@
 #ifndef KINEMATICS_H
 #define KINEMATICS_H
 
+#include <iostream>
+
 namespace kinematics{
     
     struct Vector2D {
@@ -43,9 +45,13 @@ namespace kinematics{
             {}
 
             Vector2D getPosition() const { return position; }
+            Vector2D& getPosition() { return position; }
             Vector2D getVelocity() const { return velocity; }
+            Vector2D& getVelocity() { return velocity; }
             
-            inline void updateVelocity(const int& velX, const int& velY){ velocity = Vector2D(velX, velY); }
+            inline void setVelocity(const int& velX, const int& velY){ velocity = Vector2D(velX, velY); }
+            inline void setPosition(const int& posX, const int& posY){ position = Vector2D(posX, posY); }
+
             inline void applyVelocity(const int& posX, const int& posY){ position += Vector2D(posX, posY); }
             inline void applyVelocity(const Vector2D& vec){ position += vec; }
             inline void applyVelocity(){ position += velocity; }
@@ -69,9 +75,13 @@ namespace kinematics{
             {}
 
             inline void applyVelocity() { state.applyVelocity(); }
-            inline void updateVelocity(const int& velX, const int& velY) { state.updateVelocity(velX, velY); }
+            inline void setVelocity(const int& velX, const int& velY) { state.setVelocity(velX, velY); }
+            inline void setPosition(const int& posX, const int& posY) { state.setPosition(posX, posY); }
+
             inline Vector2D getVelocity() const { return state.getVelocity(); }
+            inline Vector2D& getVelocity() { return state.getVelocity(); }
             inline Vector2D getPosition() const { return state.getPosition(); }
+            inline Vector2D& getPosition() { return state.getPosition(); }
             inline State getState() const { return state; }
 
         private:
