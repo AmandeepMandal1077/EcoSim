@@ -5,9 +5,11 @@
 
 class Plant: public Entity {
     public:
-        Plant(char symbol = '*', int posX, int posY)
-            : Entity(symbol, posX, posY)
+        Plant(int posX, int posY)
+            : Entity(animalconfig::PLANT_CONFIG, posX, posY)
         {}
+
+        virtual void update() override;
 };
 
 #endif
