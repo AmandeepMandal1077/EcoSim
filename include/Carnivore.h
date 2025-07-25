@@ -5,13 +5,15 @@
 
 class Carnivore: public Entity {
     public:
-        Carnivore(char symbol = 'C', int posX, int posY, int velX, int velY)
-            : Entity(symbol, posX, posY, velX, velY)
+        Carnivore(int posX, int posY, int velX, int velY)
+            : Entity(animalconfig::CARNIVORE_CONFIG, posX, posY, velX, velY)
         {}
 
-        Carnivore(char symbol = 'C', int posX, int posY)
-            : Entity(symbol, posX, posY)
+        Carnivore(int posX, int posY)
+            : Entity(animalconfig::CARNIVORE_CONFIG, posX, posY)
         {}
+
+        virtual void update() override;
 };
 
 #endif

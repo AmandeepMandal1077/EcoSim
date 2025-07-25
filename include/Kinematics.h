@@ -12,6 +12,10 @@ namespace kinematics{
             Vector2D(int x, int y)
                 :x(x), y(y)
             {}
+
+            Vector2D()
+                :x(0), y(0)
+            {}
         
             bool operator==(const Vector2D& other) const { return x == other.x && y == other.y; }
             void operator+=(const Vector2D& other) { x += other.x; y += other.y; }
@@ -72,6 +76,10 @@ namespace kinematics{
 
             Body(const int& posX, const int& posY)
                 :state(posX, posY, 0, 0)
+            {}
+
+            Body(const kinematics::Vector2D& pos)
+                :state(pos.x, pos.y, 0, 0)
             {}
 
             inline void applyVelocity() { state.applyVelocity(); }
