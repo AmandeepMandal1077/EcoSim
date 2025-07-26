@@ -57,7 +57,7 @@ namespace animalconfig{
     const config PLANT_CONFIG = {
         symbol: '*',
         prey: ' ',
-        energy: 0,
+        energy: 1,
         maxEnergy: 0,
         visionRange: 0,
         reproductionCost: 0,

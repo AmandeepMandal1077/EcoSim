@@ -23,7 +23,7 @@ class Entity: public kinematics::Body {
         Entity(animalconfig::config config, World& testWorld, int posX, int posY);
         Entity(animalconfig::config config, World& testWorld, kinematics::Vector2D pos);
 
-        virtual void update();
+        void update();
 
         void moveRandom();
         void moveAwayFromEntity(Entity* entity);

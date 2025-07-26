@@ -9,7 +9,7 @@ class Plant: public Entity {
             : Entity(animalconfig::PLANT_CONFIG, posX, posY)
         {}
 
-        virtual void update() override;
+        // virtual void update() override;
 };
 
 #endif
