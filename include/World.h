@@ -11,10 +11,9 @@ class Entity;
 
 class World {
     private:
-    std::vector<std::vector<Entity*>> grid;
-    std::unordered_set<uint32_t> gridOccupied;
-    static World* instancePtr;
-    
+        std::vector<std::vector<Entity*>> grid;
+        std::unordered_set<uint32_t> gridOccupied;
+        static World* instancePtr;
     
     public:
         // Protected constructor for testing
@@ -60,5 +59,14 @@ class World {
 
         char getCellSymbol(const int &x, const int &y) const;
         Entity *getEntityAt(const int &x, const int &y) const;
+        void displayWorld() const;
+        void setEntityAt(const int &x, const int &y, Entity* entity) {
+            grid[x][y] = entity;
+            gridOccupied.insert(getCellId(x, y));
+        }
+        void clearCell(const int &x, const int &y) {
+            grid[x][y] = nullptr;
+            gridOccupied.erase(getCellId(x, y));
+        }
 };
 #endif

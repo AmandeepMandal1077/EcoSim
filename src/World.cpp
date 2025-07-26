@@ -95,3 +95,23 @@ void World::killEntity(Entity* &entity) {
     delete entity;
     entity = nullptr;
 }
+
+void World::displayWorld() const {
+    uint32_t numPlants = 0, numHerbivores = 0, numCarnivores = 0;
+
+    for (int y = 0; y < size.y; ++y) {
+        for (int x = 0; x < size.x; ++x) {
+            char symbol = getCellSymbol(x, y);
+            std::cout << symbol << ' ';
+            if (symbol == animalconfig::PLANT_CONFIG.symbol) {
+                numPlants++;
+            } else if (symbol == animalconfig::HERBIVORE_CONFIG.symbol) {
+                numHerbivores++;
+            } else if (symbol == animalconfig::CARNIVORE_CONFIG.symbol) {
+                numCarnivores++;
+            }
+        }
+        std::cout << '\n';
+    }
+    std::cout << "Plants: " << numPlants << ", Herbivores: " << numHerbivores << ", Carnivores: " << numCarnivores << '\n';
+}

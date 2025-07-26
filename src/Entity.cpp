@@ -45,14 +45,15 @@ void Entity::update(){
         return;
     }
 
-    World& world = World::getInstance();
-
     kinematics::Vector2D currentPos = getPosition();
+
     kinematics::Vector2D predatorPos = findNearestPredator();
 
     if(predatorPos.x != -1 && predatorPos.y != -1) {
         moveAwayFromEntity(world.getEntityAt(predatorPos.x, predatorPos.y));
+        world.clearCell(getPosition().x, getPosition().y);
         applyVelocity();
+        world.setEntityAt(getPosition().x, getPosition().y, this);
         return;
     }
 
@@ -65,12 +66,16 @@ void Entity::update(){
         Entity* prey = world.getEntityAt(preyPos.x, preyPos.y);
         feed(prey);
         moveTowardsEntity(world.getEntityAt(preyPos.x, preyPos.y));
+        world.clearCell(getPosition().x, getPosition().y);
         applyVelocity();
+        world.setEntityAt(getPosition().x, getPosition().y, this);
         return;
     }
 
     moveRandom();
+    world.clearCell(getPosition().x, getPosition().y);
     applyVelocity();
+    world.setEntityAt(getPosition().x, getPosition().y, this);
 }
 
 void Entity::moveRandom(){
@@ -112,7 +117,7 @@ void Entity::moveRandom(){
 }
 
 void Entity::moveAwayFromEntity(Entity* entity){
-    if(entityConfig.energy <= 0) {
+    if(entity == nullptr || entityConfig.energy <= 0) {
         setVelocity(0, 0);
         return;
     }
@@ -191,6 +196,9 @@ void Entity::moveTowardsPosition(int posX, int posY){
 }
 
 void Entity::feed(Entity* &prey){
+    if(prey == nullptr){
+        return;
+    }
     kinematics::Vector2D preyPos = prey->getPosition();
     kinematics::Vector2D predatorPos = getPosition();
 
@@ -202,7 +210,7 @@ void Entity::feed(Entity* &prey){
     }
 
     char preySymbol = world.getCellSymbol(preyPos.x, preyPos.y);
-    if(preySymbol == ' ')
+    if(preySymbol == '.')
         return;
 
     char predatorSymbol = world.getCellSymbol(predatorPos.x, predatorPos.y);
@@ -246,7 +254,7 @@ kinematics::Vector2D Entity::findNearestPrey(){
     kinematics::Vector2D currentPos = getPosition();
 
     int minRow = std::max(0, (int)(currentPos.x - entityConfig.visionRange));
-    int maxRow = std::max(world.size.x - 1, (int)(currentPos.x + entityConfig.visionRange));
+    int maxRow = std::min(world.size.x - 1, (int)(currentPos.x + entityConfig.visionRange));
 
     int minCol = std::max(0, (int)(currentPos.y - entityConfig.visionRange));
     int maxCol = std::min(world.size.y - 1, (int)(currentPos.y + entityConfig.visionRange));

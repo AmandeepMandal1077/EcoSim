@@ -14,7 +14,7 @@ class Herbivore: public Entity {
             : Entity(animalconfig::HERBIVORE_CONFIG, posX, posY)
         {}
 
-        virtual void update() override;
+        // virtual void update() override;
 };
 
 #endif

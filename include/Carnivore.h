@@ -13,7 +13,7 @@ class Carnivore: public Entity {
             : Entity(animalconfig::CARNIVORE_CONFIG, posX, posY)
         {}
 
-        virtual void update() override;
+        // virtual void update() override;
 };
 
 #endif
