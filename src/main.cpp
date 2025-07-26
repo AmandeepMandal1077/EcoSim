@@ -42,9 +42,9 @@ void initializeWorldWithEntities(const uint32_t& numPlants, const uint32_t& numH
 int main(){
     srand(time(0));
     World &world = World::getInstance();
-    world.initialize(WIDTH, HEIGHT);
+    world.initialize(HEIGHT, WIDTH);
 
-    initializeWorldWithEntities(0, 1, 0);
+    initializeWorldWithEntities(5, 3, 2);
     int counter = 0;
     while(true){
         clearScreen();
@@ -55,7 +55,7 @@ int main(){
             cout << "WARNING: No entities left in the world!" << endl;
         }
         
-        sleepMainThread(1000);
+        sleepMainThread(800);
         world.run();
     }
     return 0;

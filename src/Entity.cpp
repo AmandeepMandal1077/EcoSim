@@ -39,49 +39,59 @@ bool Entity::checkBound(kinematics::Vector2D& pos){
 inline uint32_t findDistance(const kinematics::Vector2D& pos1, const kinematics::Vector2D& pos2) {
     return abs(pos1.x - pos2.x) + abs(pos1.y - pos2.y);
 }
+// Key fixes for Entity.cpp update() method:
 
 void Entity::update(){
-    if(entityConfig.symbol != animalconfig::CARNIVORE_CONFIG.symbol && entityConfig.symbol != animalconfig::HERBIVORE_CONFIG.symbol) {
+    if(entityConfig.symbol != animalconfig::CARNIVORE_CONFIG.symbol && 
+       entityConfig.symbol != animalconfig::HERBIVORE_CONFIG.symbol) {
         return;
     }
 
     kinematics::Vector2D currentPos = getPosition();
     kinematics::Vector2D predatorPos = findNearestPredator();
 
+    // Check for predators and flee
     if(predatorPos.x != -1 && predatorPos.y != -1) {
         moveAwayFromEntity(world.getEntityAt(predatorPos.x, predatorPos.y));
-        world.clearCell(getPosition().x, getPosition().y);
+        
+        world.clearCell(currentPos.x, currentPos.y);
         applyVelocity();
         world.setEntityAt(getPosition().x, getPosition().y, this);
-
-        std::cout << "Called: Run" << std::endl;
+        
+        std::cout << "Fleeing from predator" << std::endl;
         return;
     }
 
+    // Check reproduction
     if(reproduce()){
         return;
     }
 
+    // Look for prey and hunt/eat
     kinematics::Vector2D preyPos = findNearestPrey();
     if(preyPos.x != -1 && preyPos.y != -1){
         Entity* prey = world.getEntityAt(preyPos.x, preyPos.y);
-        feed(prey);
-        moveTowardsEntity(world.getEntityAt(preyPos.x, preyPos.y));
-        world.clearCell(getPosition().x, getPosition().y);
+        
+        if(findDistance(currentPos, preyPos) == 1) {
+            feed(prey);
+        }
+        
+        moveTowardsPosition(preyPos.x, preyPos.y);
+        
+        world.clearCell(currentPos.x, currentPos.y);
         applyVelocity();
         world.setEntityAt(getPosition().x, getPosition().y, this);
 
-        std::cout << "Called: Eat" << std::endl;
-
+        std::cout << "Hunting prey" << std::endl;
         return;
     }
 
     moveRandom();
-    world.clearCell(getPosition().x, getPosition().y);
+    
+    world.clearCell(currentPos.x, currentPos.y);
     applyVelocity();
     world.setEntityAt(getPosition().x, getPosition().y, this);
-    std::cout << "Called: Move" << std::endl;
-    std::cout << "vel: " << getVelocity().x << ", " << getVelocity().y << std::endl;
+    std::cout << "Random movement: " << getVelocity().x << ", " << getVelocity().y << std::endl;
 }
 
 void Entity::moveRandom(){
@@ -105,7 +115,11 @@ void Entity::moveRandom(){
         }
         
         char newCellSymbol = world.getCellSymbol(newPos.x, newPos.y);
-        if(animalconfig::getEntityRank(entityConfig.symbol) <= animalconfig::getEntityRank(newCellSymbol)){
+        // if(animalconfig::getEntityRank(entityConfig.symbol) <= animalconfig::getEntityRank(newCellSymbol)){
+        //     directions.erase(it);
+        //     continue;
+        // }
+        if(newCellSymbol == '.'){
             directions.erase(it);
             continue;
         }
@@ -151,6 +165,8 @@ void Entity::moveAwayFromEntity(Entity* entity){
             }
         }
     }
+
+    setVelocity(0, 0);
 }
 
 void Entity::moveTowardsEntity(Entity* entity){
@@ -221,8 +237,8 @@ void Entity::feed(Entity* &prey){
         return;
     }
 
-    world.killEntity(prey);
     entityConfig.energy += entityConfig.energyGainFromEating;
+    world.killEntity(prey);
 }
 
 bool Entity::reproduce(){
