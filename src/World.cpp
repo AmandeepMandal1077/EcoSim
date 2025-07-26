@@ -48,6 +48,27 @@ void World::run(){
             Entity* entity = grid[x][y];
             if (entity == nullptr || entity->isUpdated) 
                 continue;
+            if(entity->entityConfig.symbol != animalconfig::HERBIVORE_CONFIG.symbol)
+                continue;
+            
+            if(entity->entityConfig.energy <= 0) {
+                killEntity(entity);
+                grid[x][y] = nullptr; 
+            } else {
+                entity->update();
+            }
+
+            if(entity != nullptr) {
+                entity->isUpdated = true;
+            }
+        }
+    }
+
+    for(int x = 0; x < size.x; ++x){
+        for(int y = 0; y < size.y; ++y){
+            Entity* entity = grid[x][y];
+            if (entity == nullptr || entity->isUpdated) 
+                continue;
             
             if(entity->entityConfig.energy <= 0) {
                 killEntity(entity);

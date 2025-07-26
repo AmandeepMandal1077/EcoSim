@@ -35,8 +35,8 @@ namespace animalconfig{
         prey: '*',
         energy: 100,
         maxEnergy: 200,
-        visionRange: 5,
-        reproductionCost: 50,
+        visionRange: 2,
+        reproductionCost: 100,
         reproductionThreshold: 150,
         energyGainFromEating: 20,
         energyCostPerTick: 1
@@ -47,8 +47,8 @@ namespace animalconfig{
         prey : 'H',
         energy : 120,
         maxEnergy : 220,
-        visionRange : 6,
-        reproductionCost : 60,
+        visionRange : 5,
+        reproductionCost : 120,
         reproductionThreshold : 180,
         energyGainFromEating : 30,
         energyCostPerTick : 2

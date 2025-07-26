@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <thread>
 #include <chrono>
+#include <ctime>
 #include "../include/World.h"
 #include "../include/Entity.h"
 #include "../include/Carnivore.h"
@@ -11,8 +12,8 @@
 
 using namespace std;
 
-const uint32_t WIDTH = 10;
-const uint32_t HEIGHT = 10;
+const uint32_t WIDTH = 5;
+const uint32_t HEIGHT = 5;
 
 void clearScreen(){
     #ifdef _WIN32
@@ -44,10 +45,10 @@ int main(){
     World &world = World::getInstance();
     world.initialize(HEIGHT, WIDTH);
 
-    initializeWorldWithEntities(5, 3, 2);
+    initializeWorldWithEntities(0, 20, 2);
     int counter = 0;
     while(true){
-        clearScreen();
+        world.run();
         world.displayWorld();
         cout << "Iteration: " << counter++ << " - Occupied Cells: " << world.getOccupiedCellsCount() << endl;
         
@@ -56,7 +57,7 @@ int main(){
         }
         
         sleepMainThread(800);
-        world.run();
+        clearScreen();
     }
     return 0;
 }

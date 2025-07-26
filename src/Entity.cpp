@@ -4,6 +4,9 @@
 #include <utility>
 #include <algorithm>
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
+
 using namespace std;
 
 // Standard constructors using singleton
@@ -50,24 +53,26 @@ void Entity::update(){
     kinematics::Vector2D currentPos = getPosition();
     kinematics::Vector2D predatorPos = findNearestPredator();
 
-    // Check for predators and flee
     if(predatorPos.x != -1 && predatorPos.y != -1) {
         moveAwayFromEntity(world.getEntityAt(predatorPos.x, predatorPos.y));
         
         world.clearCell(currentPos.x, currentPos.y);
-        applyVelocity();
+        float probabilityToMove = static_cast<float>(rand()) / RAND_MAX;
+        if(probabilityToMove >= 0.3){
+            applyVelocity();
+            tickEnergy();
+        }
+
         world.setEntityAt(getPosition().x, getPosition().y, this);
         
-        std::cout << "Fleeing from predator" << std::endl;
+        // std::cout << "Fleeing from predator" << std::endl;
         return;
     }
 
-    // Check reproduction
     if(reproduce()){
         return;
     }
 
-    // Look for prey and hunt/eat
     kinematics::Vector2D preyPos = findNearestPrey();
     if(preyPos.x != -1 && preyPos.y != -1){
         Entity* prey = world.getEntityAt(preyPos.x, preyPos.y);
@@ -82,7 +87,7 @@ void Entity::update(){
         applyVelocity();
         world.setEntityAt(getPosition().x, getPosition().y, this);
 
-        std::cout << "Hunting prey" << std::endl;
+        // std::cout << "Hunting prey" << std::endl;
         return;
     }
 
@@ -91,7 +96,7 @@ void Entity::update(){
     world.clearCell(currentPos.x, currentPos.y);
     applyVelocity();
     world.setEntityAt(getPosition().x, getPosition().y, this);
-    std::cout << "Random movement: " << getVelocity().x << ", " << getVelocity().y << std::endl;
+    // std::cout << "en: " << entityConfig.energy << " Random movement: " << getVelocity().x << ", " << getVelocity().y << std::endl;
 }
 
 void Entity::moveRandom(){
@@ -115,11 +120,7 @@ void Entity::moveRandom(){
         }
         
         char newCellSymbol = world.getCellSymbol(newPos.x, newPos.y);
-        // if(animalconfig::getEntityRank(entityConfig.symbol) <= animalconfig::getEntityRank(newCellSymbol)){
-        //     directions.erase(it);
-        //     continue;
-        // }
-        if(newCellSymbol == '.'){
+        if(newCellSymbol != '.'){
             directions.erase(it);
             continue;
         }
@@ -160,7 +161,6 @@ void Entity::moveAwayFromEntity(Entity* entity){
 
             if(newDist > curDist){
                 setVelocity(x, y);
-                tickEnergy();
                 return;
             }
         }
@@ -238,6 +238,7 @@ void Entity::feed(Entity* &prey){
     }
 
     entityConfig.energy += entityConfig.energyGainFromEating;
+    entityConfig.energy = std::min(entityConfig.energy, entityConfig.maxEnergy);
     world.killEntity(prey);
 }
 
@@ -263,6 +264,7 @@ bool Entity::reproduce(){
         return false;
     }
     
+    entityConfig.energy -= config.reproductionCost;
     Entity *child = new Entity(animalconfig::getConfig(config.symbol), reproductionPos);
     world.addEntity(child);
     return true;
