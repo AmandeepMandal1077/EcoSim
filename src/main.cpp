@@ -44,12 +44,18 @@ int main(){
     World &world = World::getInstance();
     world.initialize(WIDTH, HEIGHT);
 
-    initializeWorldWithEntities(5, 3, 2);
+    initializeWorldWithEntities(0, 1, 0);
+    int counter = 0;
     while(true){
         clearScreen();
         world.displayWorld();
+        cout << "Iteration: " << counter++ << " - Occupied Cells: " << world.getOccupiedCellsCount() << endl;
+        
+        if (world.getOccupiedCellsCount() == 0) {
+            cout << "WARNING: No entities left in the world!" << endl;
+        }
+        
         sleepMainThread(1000);
-
         world.run();
     }
     return 0;

@@ -46,7 +46,6 @@ void Entity::update(){
     }
 
     kinematics::Vector2D currentPos = getPosition();
-
     kinematics::Vector2D predatorPos = findNearestPredator();
 
     if(predatorPos.x != -1 && predatorPos.y != -1) {
@@ -54,6 +53,8 @@ void Entity::update(){
         world.clearCell(getPosition().x, getPosition().y);
         applyVelocity();
         world.setEntityAt(getPosition().x, getPosition().y, this);
+
+        std::cout << "Called: Run" << std::endl;
         return;
     }
 
@@ -69,6 +70,9 @@ void Entity::update(){
         world.clearCell(getPosition().x, getPosition().y);
         applyVelocity();
         world.setEntityAt(getPosition().x, getPosition().y, this);
+
+        std::cout << "Called: Eat" << std::endl;
+
         return;
     }
 
@@ -76,14 +80,12 @@ void Entity::update(){
     world.clearCell(getPosition().x, getPosition().y);
     applyVelocity();
     world.setEntityAt(getPosition().x, getPosition().y, this);
+    std::cout << "Called: Move" << std::endl;
+    std::cout << "vel: " << getVelocity().x << ", " << getVelocity().y << std::endl;
 }
 
 void Entity::moveRandom(){
-    if(world.getOccupiedCellsCount() == world.size.x * world.size.y) {
-        return;
-    }
-
-    if(entityConfig.energy <= 0) {
+    if(entityConfig.energy <= 0 || world.getOccupiedCellsCount() == world.size.x * world.size.y) {
         setVelocity(0, 0);
         return;
     }
@@ -215,7 +217,7 @@ void Entity::feed(Entity* &prey){
 
     char predatorSymbol = world.getCellSymbol(predatorPos.x, predatorPos.y);
 
-    if((preySymbol == '*' && predatorSymbol == 'W') || preySymbol == predatorSymbol){
+    if((preySymbol == animalconfig::PLANT_CONFIG.symbol && predatorSymbol == animalconfig::CARNIVORE_CONFIG.symbol) || preySymbol == predatorSymbol){
         return;
     }
 
@@ -265,7 +267,7 @@ kinematics::Vector2D Entity::findNearestPrey(){
     for(int row = minRow; row <= maxRow; ++row){
         for(int col = minCol; col <= maxCol; ++col){
             if(entityConfig.prey == world.getCellSymbol(row, col)){
-                uint32_t currentDist = abs(currentPos.x - row) + abs(currentPos.y - col);
+                uint32_t currentDist = findDistance(currentPos, kinematics::Vector2D(row, col));
                 if(currentDist < minDist){
                     minDist = currentDist;
                     preyX = row;
