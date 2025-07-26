@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include <cstdint>
 #include <memory>
+#include <iostream>
 
 #include "kinematics.h"
 class Entity;
@@ -35,7 +36,7 @@ class World {
 
         void initialize(int width, int height) {
             size = kinematics::Vector2D(width, height);
-            grid.resize(width, std::vector<Entity*>(height, nullptr));
+            grid.resize(height, std::vector<Entity*>(width, nullptr));
         }
 
         void addEntity(Entity* entity);
@@ -61,12 +62,25 @@ class World {
         Entity *getEntityAt(const int &x, const int &y) const;
         void displayWorld() const;
         void setEntityAt(const int &x, const int &y, Entity* entity) {
-            grid[x][y] = entity;
-            gridOccupied.insert(getCellId(x, y));
+            if (x >= 0 && x < size.x && y >= 0 && y < size.y) {
+                grid[x][y] = entity;
+                gridOccupied.insert(getCellId(x, y));
+            } else {
+                std::cerr << "ERROR: Attempt to set entity at invalid position: " << x << ", " << y << std::endl;
+                // Handle error - maybe throw an exception or handle gracefully
+            }
         }
         void clearCell(const int &x, const int &y) {
-            grid[x][y] = nullptr;
-            gridOccupied.erase(getCellId(x, y));
+            if (x >= 0 && x < size.x && y >= 0 && y < size.y) {
+                grid[x][y] = nullptr;
+                uint32_t cellId = getCellId(x, y);
+                if (gridOccupied.find(cellId) != gridOccupied.end()) {
+                    gridOccupied.erase(cellId);
+                }
+            } else {
+                std::cerr << "ERROR: Attempt to clear invalid cell: " << x << ", " << y << std::endl;
+                // Handle error
+            }
         }
 };
 #endif

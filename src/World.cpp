@@ -39,12 +39,23 @@ void World::run(){
         for(auto& entity: i){
             if (entity == nullptr) 
                 continue;
+            entity->isUpdated = false;
+        }
+    }
+    
+    for(auto& i: grid){
+        for(auto& entity: i){
+            if (entity == nullptr || entity->isUpdated) 
+                continue;
             else if(entity->entityConfig.energy <= 0) 
                 killEntity(entity);
             else
                 entity->update();
+
+            entity->isUpdated = true;
         }
     }
+
 }
 
 char World::getCellSymbol(const int& x, const int& y) const {
@@ -99,8 +110,8 @@ void World::killEntity(Entity* &entity) {
 void World::displayWorld() const {
     uint32_t numPlants = 0, numHerbivores = 0, numCarnivores = 0;
 
-    for (int y = 0; y < size.y; ++y) {
-        for (int x = 0; x < size.x; ++x) {
+    for (int x = 0; x < size.x; ++x) {
+        for (int y = 0; y < size.y; ++y) {
             char symbol = getCellSymbol(x, y);
             std::cout << symbol << ' ';
             if (symbol == animalconfig::PLANT_CONFIG.symbol) {

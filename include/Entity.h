@@ -9,8 +9,9 @@ class World;
 class Entity: public kinematics::Body {
     protected:
         World &world;
-
+        
     public:
+        bool isUpdated = false;
         animalconfig::config entityConfig;
         
         // For production code (uses singleton)
