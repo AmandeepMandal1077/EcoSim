@@ -33,31 +33,56 @@ void World::resetInstance() {
     delete instancePtr;
     instancePtr = nullptr;
 }
-
 void World::run(){
-    for(auto& i: grid){
-        for(auto& entity: i){
-            if (entity == nullptr) 
-                continue;
-            entity->isUpdated = false;
+    for(int x = 0; x < size.x; ++x){
+        for(int y = 0; y < size.y; ++y){
+            Entity* entity = grid[x][y];
+            if (entity != nullptr) {
+                entity->isUpdated = false;
+            }
         }
     }
     
-    for(auto& i: grid){
-        for(auto& entity: i){
+    for(int x = 0; x < size.x; ++x){
+        for(int y = 0; y < size.y; ++y){
+            Entity* entity = grid[x][y];
             if (entity == nullptr || entity->isUpdated) 
                 continue;
-            else if(entity->entityConfig.energy <= 0) 
+            if(entity->entityConfig.symbol != animalconfig::HERBIVORE_CONFIG.symbol)
+                continue;
+            
+            if(entity->entityConfig.energy <= 0) {
                 killEntity(entity);
-            else
+                grid[x][y] = nullptr; 
+            } else {
                 entity->update();
+            }
 
-            entity->isUpdated = true;
+            if(entity != nullptr) {
+                entity->isUpdated = true;
+            }
         }
     }
 
-}
+    for(int x = 0; x < size.x; ++x){
+        for(int y = 0; y < size.y; ++y){
+            Entity* entity = grid[x][y];
+            if (entity == nullptr || entity->isUpdated) 
+                continue;
+            
+            if(entity->entityConfig.energy <= 0) {
+                killEntity(entity);
+                grid[x][y] = nullptr; 
+            } else {
+                entity->update();
+            }
 
+            if(entity != nullptr) {
+                entity->isUpdated = true;
+            }
+        }
+    }
+}
 char World::getCellSymbol(const int& x, const int& y) const {
     if (isCellOccupied(x, y)) {
         return grid[x][y]->getSymbol();
