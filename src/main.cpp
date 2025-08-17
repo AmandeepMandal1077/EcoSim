@@ -5,15 +5,12 @@
 #include <ctime>
 #include "../include/World.h"
 #include "../include/Entity.h"
-#include "../include/Carnivore.h"
-#include "../include/Herbivore.h"
-#include "../include/Plant.h"
 #include "../include/AnimalConfig.h"
 
 using namespace std;
 
-const uint32_t WIDTH = 5;
-const uint32_t HEIGHT = 5;
+const uint32_t WIDTH = 10;
+const uint32_t HEIGHT = 10;
 
 void clearScreen(){
     #ifdef _WIN32
@@ -45,7 +42,7 @@ int main(){
     World &world = World::getInstance();
     world.initialize(HEIGHT, WIDTH);
 
-    initializeWorldWithEntities(0, 20, 2);
+    initializeWorldWithEntities(5, 3, 2);
     int counter = 0;
     while(true){
         world.run();
@@ -54,6 +51,7 @@ int main(){
         
         if (world.getOccupiedCellsCount() == 0) {
             cout << "WARNING: No entities left in the world!" << endl;
+            break;
         }
         
         sleepMainThread(800);
