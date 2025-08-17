@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include "../include/World.h"
 #include "../include/Entity.h"
-#include "../include/Carnivore.h"
-#include "../include/Herbivore.h"
+// #include "../include/Carnivore.h"
+// #include "../include/Herbivore.h"
 #include <memory>
 
 namespace {
