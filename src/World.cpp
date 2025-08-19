@@ -1,6 +1,7 @@
 #include "../include/World.h"
 #include "../include/Entity.h"
 #include <climits>
+#include <SFML/Graphics.hpp>
 
 // Initialize static member
 World* World::instancePtr = nullptr;
@@ -150,4 +151,41 @@ void World::displayWorld() const {
         std::cout << '\n';
     }
     std::cout << "Plants: " << numPlants << ", Herbivores: " << numHerbivores << ", Carnivores: " << numCarnivores << '\n';
+}
+void World::render(sf::RenderWindow& window, std::map<char, sf::Texture>& textures, const uint32_t& tileSize) {
+    for (int x = 0; x < size.x; ++x) {
+        for (int y = 0; y < size.y; ++y) {
+            sf::Sprite sprite;
+            char symbol = getCellSymbol(x, y);
+            
+            sf::Texture* texture = &textures[' ']; // Default to tile
+            if (textures.count(symbol)) {
+                texture = &textures[symbol];
+            }
+            sprite.setTexture(*texture);
+
+            const Entity* entity = getEntityAt(x, y);
+            if(entity != nullptr && (entity->entityConfig.symbol == 'H' || entity->entityConfig.symbol == 'C')) {
+                if(entity->entityConfig.energy <= 50) {
+                    sf::Color color(255, 100, 100);
+                    color.a = 50 + (3 * entity->entityConfig.energy);
+                    sprite.setColor(color);
+                }
+            }
+
+            // color.a = 200;
+            // sprite.setColor(color);
+            // --- SCALING LOGIC ---
+            // Get the original size of the texture
+            sf::Vector2u textureSize = texture->getSize();
+            // Calculate the scale factor needed to fit the tile size
+            float scaleX = (float)tileSize / textureSize.x;
+            float scaleY = (float)tileSize / textureSize.y;
+            // Apply the scale
+            sprite.setScale(scaleX, scaleY);
+            
+            sprite.setPosition(y * tileSize, x * tileSize);
+            window.draw(sprite);
+        }
+    }
 }

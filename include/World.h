@@ -6,6 +6,8 @@
 #include <cstdint>
 #include <memory>
 #include <iostream>
+#include <SFML/Graphics.hpp>
+#include <map>
 
 #include "kinematics.h"
 class Entity;
@@ -44,6 +46,8 @@ class World {
         void killEntity(Entity* &entity);
         kinematics::Vector2D getNewEmptyCell();
         void run();
+        // Updated render function signature
+        void render(sf::RenderWindow& window, std::map<char, sf::Texture>& textures, const uint32_t& tileSize);
 
         inline bool isCellOccupied(const int& x, const int& y) const { return gridOccupied.find(getCellId(x, y)) != gridOccupied.end(); }
 
@@ -67,7 +71,6 @@ class World {
                 gridOccupied.insert(getCellId(x, y));
             } else {
                 std::cerr << "ERROR: Attempt to set entity at invalid position: " << x << ", " << y << std::endl;
-                // Handle error - maybe throw an exception or handle gracefully
             }
         }
         void clearCell(const int &x, const int &y) {
@@ -79,7 +82,6 @@ class World {
                 }
             } else {
                 std::cerr << "ERROR: Attempt to clear invalid cell: " << x << ", " << y << std::endl;
-                // Handle error
             }
         }
 };
